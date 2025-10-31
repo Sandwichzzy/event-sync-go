@@ -16,13 +16,13 @@ const (
 )
 
 type Config struct {
-	Migrations     string
-	Chain          ChainConfig
-	MasterDB       DBConfig
-	SlaveDB        DBConfig
-	SlaveDbEnable  bool
+	Migrations    string
+	Chain         ChainConfig
+	MasterDB      DBConfig
+	SlaveDB       DBConfig
+	SlaveDbEnable bool
 	//ApiCacheEnable bool
-	HTTPServer     ServerConfig
+	HTTPServer ServerConfig
 }
 
 type ChainConfig struct {
@@ -58,7 +58,7 @@ func LoadConfig(cliCtx *cli.Context) (Config, error) {
 	if cfg.Chain.LoopInterval == 0 {
 		cfg.Chain.LoopInterval = defaultLoopInterval
 	}
-	log.Info("loaded chain config", "config", cfg.Chain
+	log.Info("loaded chain config", "config", cfg.Chain)
 	return cfg, nil
 }
 
@@ -68,11 +68,10 @@ func LoadContracts() []common.Address {
 	return Contracts
 }
 
-
 func NewConfig(cliCtx *cli.Context) Config {
 	return Config{
-		Migrations:     cliCtx.String(flags.MigrationsFlag.Name),
-		Chain:           ChainConfig{
+		Migrations: cliCtx.String(flags.MigrationsFlag.Name),
+		Chain: ChainConfig{
 			ChainId:        cliCtx.Uint(flags.ChainIdFlag.Name),
 			ChainRpcUrl:    cliCtx.String(flags.ChainRpcFlag.Name),
 			StartingHeight: cliCtx.Uint64(flags.StartingHeightFlag.Name),
