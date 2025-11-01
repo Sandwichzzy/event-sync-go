@@ -8,7 +8,7 @@ import (
 
 	"github.com/urfave/cli/v2"
 
-	"github.com/the-web3-contracts/event-sync/common/opio"
+	"github.com/Sandwichzzy/event-sync-go/common/opio"
 )
 
 var interruptErr = errors.New("interrupt signal")

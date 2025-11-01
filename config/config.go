@@ -7,7 +7,7 @@ import (
 	"github.com/ethereum/go-ethereum/log"
 	"github.com/urfave/cli/v2"
 
-	"github.com/Sandwichzzy/event-sync-go.git/flags"
+	"github.com/Sandwichzzy/event-sync-go/flags"
 )
 
 const (

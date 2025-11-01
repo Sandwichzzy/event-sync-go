@@ -3,15 +3,19 @@ package main
 import (
 	"context"
 
-	//"github.com/Sandwichzzy/event-sync-go.git/common/opio"
-	//"github.com/Sandwichzzy/event-sync-go.git/config"
+	"github.com/Sandwichzzy/event-sync-go/common/opio"
+	"github.com/Sandwichzzy/event-sync-go/config"
+	"github.com/Sandwichzzy/event-sync-go/database"
+	"github.com/ethereum/go-ethereum/log"
+	//"github.com/Sandwichzzy/event-sync-go/common/opio"
+	//"github.com/Sandwichzzy/event-sync-go/config"
 	//"github.com/ethereum/go-ethereum/log"
 	"github.com/urfave/cli/v2"
 
-	"github.com/Sandwichzzy/event-sync-go.git/common/cliapp"
+	"github.com/Sandwichzzy/event-sync-go/common/cliapp"
 
-	//event_sync "github.com/Sandwichzzy/event-sync-go.git"
-	flags2 "github.com/Sandwichzzy/event-sync-go.git/flags"
+	//event_sync "github.com/Sandwichzzy/event-sync-go"
+	flags2 "github.com/Sandwichzzy/event-sync-go/flags"
 )
 
 func runIndexer(ctx *cli.Context, shutdown context.CancelCauseFunc) (cliapp.Lifecycle, error) {
@@ -30,19 +34,25 @@ func runApi(ctx *cli.Context, _ context.CancelCauseFunc) (cliapp.Lifecycle, erro
 }
 
 func runMigrations(ctx *cli.Context) error {
-	//log.Info("Running migrations...")
-	//cfg, err := config.LoadConfig(ctx)
-	//if err != nil {
-	//	log.Error("failed to load config", "err", err)
-	//	return err
-	//}
-	//ctx.Context = opio.CancelOnInterrupt(ctx.Context)
-	//db, err := database.NewDB(ctx.Context, cfg.MasterDB)
-	//if err != nil {
-	//	log.Error("failed to connect to database", "err", err)
-	//	return err
-	//}
-	return nil
+	log.Info("Running migrations...")
+	cfg, err := config.LoadConfig(ctx)
+	if err != nil {
+		log.Error("failed to load config", "err", err)
+		return err
+	}
+	ctx.Context = opio.CancelOnInterrupt(ctx.Context)
+	db, err := database.NewDB(ctx.Context, cfg.MasterDB)
+	if err != nil {
+		log.Error("failed to connect to database", "err", err)
+		return err
+	}
+	defer func(db *database.DB) {
+		err := db.Close()
+		if err != nil {
+			return
+		}
+	}(db)
+	return db.ExecuteSQLMigration(cfg.Migrations)
 }
 
 func NewCli() *cli.App {
