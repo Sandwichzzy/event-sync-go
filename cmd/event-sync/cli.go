@@ -7,14 +7,11 @@ import (
 	"github.com/Sandwichzzy/event-sync-go/config"
 	"github.com/Sandwichzzy/event-sync-go/database"
 	"github.com/ethereum/go-ethereum/log"
-	//"github.com/Sandwichzzy/event-sync-go/common/opio"
-	//"github.com/Sandwichzzy/event-sync-go/config"
-	//"github.com/ethereum/go-ethereum/log"
+
 	"github.com/urfave/cli/v2"
 
 	"github.com/Sandwichzzy/event-sync-go/common/cliapp"
 
-	//event_sync "github.com/Sandwichzzy/event-sync-go"
 	flags2 "github.com/Sandwichzzy/event-sync-go/flags"
 )
 
