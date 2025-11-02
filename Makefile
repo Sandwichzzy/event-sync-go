@@ -29,6 +29,8 @@ bindings:
 
 		rm $(temp)
 
+
+
 .PHONY: \
 	event-sync \
 	bindings \
