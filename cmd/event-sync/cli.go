@@ -10,20 +10,19 @@ import (
 
 	"github.com/urfave/cli/v2"
 
+	event_sync "github.com/Sandwichzzy/event-sync-go"
 	"github.com/Sandwichzzy/event-sync-go/common/cliapp"
-
 	flags2 "github.com/Sandwichzzy/event-sync-go/flags"
 )
 
 func runIndexer(ctx *cli.Context, shutdown context.CancelCauseFunc) (cliapp.Lifecycle, error) {
-	//log.Info("run event watcher indexer")
-	//cfg, err := config.LoadConfig(ctx)
-	//if err != nil {
-	//	log.Error("failed to load config", "err", err)
-	//	return nil, err
-	//}
-	//return event_sync.NewEventSync(ctx.Context, &cfg, shutdown)
-	return nil, nil
+	log.Info("run event sync indexer")
+	cfg, err := config.LoadConfig(ctx)
+	if err != nil {
+		log.Error("failed to load config", "err", err)
+		return nil, err
+	}
+	return event_sync.NewEventSync(ctx.Context, &cfg, shutdown)
 }
 
 func runApi(ctx *cli.Context, _ context.CancelCauseFunc) (cliapp.Lifecycle, error) {
