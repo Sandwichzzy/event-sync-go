@@ -29,6 +29,16 @@ CREATE TABLE IF NOT EXISTS block_headers (
 CREATE INDEX IF NOT EXISTS block_headers_timestamp ON block_headers(timestamp);
 CREATE INDEX IF NOT EXISTS block_headers_number ON block_headers(number);
 
+-- event_blocks表：
+CREATE TABLE IF NOT EXISTS event_blocks(
+                                           guid        VARCHAR PRIMARY KEY,
+                                           hash        VARCHAR NOT NULL UNIQUE,
+                                           parent_hash VARCHAR NOT NULL UNIQUE,
+                                           number      UINT256 NOT NULL UNIQUE,
+                                           timestamp   INTEGER NOT NULL UNIQUE CHECK (timestamp > 0)
+);
+CREATE INDEX IF NOT EXISTS event_blocks_timestamp ON event_blocks(timestamp);
+CREATE INDEX IF NOT EXISTS event_blocks_number ON event_blocks(number);
 
 -- 创建contract_events表：
 -- 存储合约事件

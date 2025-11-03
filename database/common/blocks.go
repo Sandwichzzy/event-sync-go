@@ -2,8 +2,9 @@ package common
 
 import (
 	"errors"
-	"gorm.io/gorm"
 	"math/big"
+
+	"gorm.io/gorm"
 
 	"github.com/google/uuid"
 
@@ -26,6 +27,7 @@ func (BlockHeader) TableName() string {
 
 type BlocksView interface {
 	BlockHeader(hash common.Hash) (*BlockHeader, error)
+	BlockHeaderByNumber(*big.Int) (*BlockHeader, error)
 	BlockHeaderWithFilter(BlockHeader) (*BlockHeader, error)
 	BlockHeaderWithScope(func(db *gorm.DB) *gorm.DB) (*BlockHeader, error)
 	LatestBlockHeader() (*BlockHeader, error)
@@ -38,6 +40,10 @@ type BlocksDB interface {
 
 type blocksDB struct {
 	gorm *gorm.DB
+}
+
+func (b blocksDB) BlockHeaderByNumber(number *big.Int) (*BlockHeader, error) {
+	return b.BlockHeaderWithFilter(BlockHeader{Number: number})
 }
 
 func (b blocksDB) BlockHeader(hash common.Hash) (*BlockHeader, error) {

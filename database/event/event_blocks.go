@@ -2,8 +2,9 @@ package event
 
 import (
 	"errors"
-	"gorm.io/gorm"
 	"math/big"
+
+	"gorm.io/gorm"
 
 	"github.com/google/uuid"
 
@@ -19,6 +20,10 @@ type EventBlocks struct {
 	ParentHash common.Hash `gorm:"serializer:bytes"`
 	Number     *big.Int    `gorm:"serializer:u256"`
 	Timestamp  uint64
+}
+
+func (EventBlocks) TableName() string {
+	return "event_blocks"
 }
 
 type BlocksView interface {

@@ -22,6 +22,10 @@ type ContractEvent struct {
 	RLPLog          *types.Log `gorm:"serializer:rlp;column:rlp_bytes"`
 }
 
+func (ContractEvent) TableName() string {
+	return "contract_events"
+}
+
 func (c *ContractEvent) AfterFind(tx *gorm.DB) error {
 	c.RLPLog.BlockHash = c.BlockHash
 	c.RLPLog.TxHash = c.TransactionHash
