@@ -4,6 +4,7 @@ import (
 	"context"
 	"sync/atomic"
 
+	"github.com/Sandwichzzy/event-sync-go/event"
 	"github.com/ethereum/go-ethereum/log"
 
 	"github.com/Sandwichzzy/event-sync-go/config"
@@ -13,7 +14,8 @@ import (
 )
 
 type EventSync struct {
-	synchronizer *synchronizer.Synchronizer
+	synchronizer   *synchronizer.Synchronizer
+	eventProcessor *event.EventProcessor
 
 	shutdown context.CancelCauseFunc
 	stopped  atomic.Bool
@@ -37,9 +39,22 @@ func NewEventSync(ctx context.Context, cfg *config.Config, shutdown context.Canc
 		return nil, err
 	}
 
+	eventConfig := &event.EventProcessorConfig{
+		LoopInterval:    cfg.Chain.LoopInterval,
+		EventStartBlock: cfg.Chain.StartingHeight,
+		EventBlockStep:  cfg.Chain.BlockStep,
+	}
+
+	eventProcessor, err := event.NewEventProcessor(db, eventConfig, shutdown)
+	if err != nil {
+		log.Error("new event processor fail", "err", err)
+		return nil, err
+	}
+
 	out := &EventSync{
-		synchronizer: syncer,
-		shutdown:     shutdown,
+		synchronizer:   syncer,
+		eventProcessor: eventProcessor,
+		shutdown:       shutdown,
 	}
 	return out, nil
 }
@@ -49,11 +64,19 @@ func (es *EventSync) Start(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
+	err = es.eventProcessor.Start()
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
 func (es *EventSync) Stop(ctx context.Context) error {
 	err := es.synchronizer.Close()
+	if err != nil {
+		return err
+	}
+	err = es.eventProcessor.Close()
 	if err != nil {
 		return err
 	}
