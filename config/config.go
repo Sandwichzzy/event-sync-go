@@ -13,7 +13,7 @@ import (
 const (
 	defaultConfirmations = 64
 	defaultLoopInterval  = 5000
-	TreasureManagerAddr  = ""
+	TreasureManagerAddr  = "0x388fF618Ca5c1b8F28D4E845B431Ca3D4200140e"
 )
 
 type Config struct {

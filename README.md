@@ -1,73 +1,88 @@
-好的！我已经检查了你的系统，PostgreSQL 确实还未安装。我为你准备了完整的安装和迁移步骤。
+# event-sync 代码调式
+## 一.部署合约
+- 生成钱包地址 
+- cast wallet n
+```
+Successfully created new keypair.
+Address:     0x5d008115fEB33aE09F135A724b3343112C162B6c
+Private key: 0x5fb48f2298b35d82e632f7385ab918a3896a9c6ed774bd0787d9461bb3a3d2e4
+```
+- 环境变量配置
+```
+export PRIVATE_KEY=0x5fb48f2298b35d82e632f7385ab918a3896a9c6ed774bd0787d9461bb3a3d2e4
+export RPC_URL=https://rpc-testnet.roothashpay.com
+```
+- 部署合约
+`forge script ./script/TreasureManagerScript.s.sol:TreasureManagerScript --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast`
+- 部署完成之后的合约地址
+```treasureManagerImplementation = 0x09bc3071DD385DFe5A10c09F747Ac9037D66499f
+treasureManager = 0x388fF618Ca5c1b8F28D4E845B431Ca3D4200140e
+treasureManagerProxyAdmin = 0x7bC3b56AE67698632Bb25DbedDB86D00f81AF0F7
+```
+- 调用合约抛出合约事件
+```
+cast send --rpc-url $ROOTHASH_RPC_URL --private-key $PRIVATE_KEY 0x388fF618Ca5c1b8F28D4E845B431Ca3D4200140e --value 100000000000 "depositETH()"
+cast send --rpc-url $ROOTHASH_RPC_URL --private-key $PRIVATE_KEY 0x388fF618Ca5c1b8F28D4E845B431Ca3D4200140e "setWithdrawManager(address)"  0x5d008115fEB33aE09F135A724b3343112C162B6c
+```
 
-PostgreSQL 安装和数据迁移步骤
+## 二.启动项目扫链
+- 编译代码
+* `go mod tidy`
+* `make`
+- 配置环境变量
+```
+export EVENT_SYNC_MIGRATIONS_DIR="./migrations"
 
-根据你的项目配置（.env 文件），项目已经配置好了 PostgreSQL 连接参数：
-- 数据库名: event_sync
-- 用户名: Sandwich
-- 密码: zzy15198
-- 端口: 5432
+export EVENT_SYNC_CHAIN_ID=1
+export EVENT_SYNC_CHAIN_RPC="https://rpc-testnet.roothashpay.com"
+export EVENT_SYNC_STARTING_HEIGHT=1140200 区块的配置在创建合约那个高度就行
+export EVENT_SYNC_CONFIRMATIONS=10
+export EVENT_SYNC_LOOP_INTERVAL=1s
+export EVENT_SYNC_BLOCKS_STEP=10
 
-步骤 1: 安装 PostgreSQL
+export EVENT_SYNC_HTTP_PORT=8989
+export EVENT_SYNC_HTTP_HOST="127.0.0.1"
 
-由于你使用的是 Ubuntu/Debian 系统，我们可以使用 apt 安装：
+export EVENT_SYNC_SLAVE_DB_ENABLE=false
 
-# 更新软件包列表
-sudo apt update
+export EVENT_SYNC_MASTER_DB_HOST="127.0.0.1"
+export EVENT_SYNC_MASTER_DB_PORT=5432
+export EVENT_SYNC_MASTER_DB_USER="sandwichzzy"
+export EVENT_SYNC_MASTER_DB_PASSWORD=""
+export EVENT_SYNC_MASTER_DB_NAME="event_sync"
 
-# 安装 PostgreSQL 和相关工具
-sudo apt install postgresql postgresql-contrib -y
+export EVENT_SYNC_SLAVE_DB_HOST="127.0.0.1"
+export EVENT_SYNC_SLAVE_DB_PORT=5432
+export EVENT_SYNC_SLAVE_DB_USER="sandwichzzy"
+export EVENT_SYNC_SLAVE_DB_PASSWORD=""
+export EVENT_SYNC_SLAVE_DB_NAME="event_sync"
+区块的配置在创建合约那个高度就行
+```
 
-你想现在开始安装吗？我可以帮你执行这些命令。
+- 让环境变量生效
+`source .env`
+- migrate 数据库
+`./event-sync migrate`
+- 启动扫链服务
+`./event-sync migrate`
+接下来不断发合约执行命令
 
-步骤 2: 启动并配置 PostgreSQL 服务
-
-# 启动 PostgreSQL 服务
-sudo systemctl start postgresql
-
-# 设置开机自启
-sudo systemctl enable postgresql
-
-# 检查服务状态
-sudo systemctl status postgresql
-
-步骤 3: 创建数据库用户和数据库
-
-# 切换到 postgres 用户并创建新用户
-sudo -u postgres psql -c "CREATE USER \"Sandwich\" WITH PASSWORD 'zzy15198';"
-
-# 创建数据库并设置所有者
-sudo -u postgres psql -c "CREATE DATABASE event_sync OWNER \"Sandwich\";"
-
-# 授予用户所有权限
-sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE event_sync TO \"Sandwich\";"
-
-步骤 4: 运行数据库迁移脚本
-
-你的项目已经有迁移文件 migrations/0001_create_schema.sql，它会创建以下表：
-- block_headers - 区块头信息
-- contract_events - 合约事件
-- deposit_tokens - 存款代币
-- withdraw_tokens - 提款代币
-- grant_reward_tokens - 授予奖励代币
-- withdraw_manager_update - 提款管理器更新
-
-运行迁移（两种方式）：
-
-方式 A: 使用项目的迁移功能
-# 先加载环境变量
-source .env
-
-# 然后运行你的应用程序，它会自动执行迁移
-./event-sync migrate  # 或者使用你的应用程序的迁移命令
-
-方式 B: 手动运行 SQL
-# 直接执行 SQL 文件
-PGPASSWORD='zzy15198' psql -h 127.0.0.1 -U Sandwich -d event_sync -f ./migrations/0001_create_schema.sql
-
-步骤 5: 验证安装
-
-# 连接到数据库并查看表
-PGPASSWORD='zzy15198' psql -h 127.0.0.1 -U Sandwich -d event_sync -c "\dt"
-
-你想让我帮你执行这些步骤吗？我可以逐步为你运行这些命令。
+## 三. GRPC 和 HTTP Server
+- 启动 grpc server
+`./event-sync grpc`
+- 使用 grpcui 测试 grpc 接口
+`grpcui -plaintext ip:porr`
+`grpcui -plaintext 127.0.0.1:8987`
+- 启动 http server
+`./event-sync api`
+- 测试 http api
+`http://127.0.0.1:8989/api/v1/deposit/tokens?page=1&pageSize=10`
+## 四.RootHash Chain 附属资料
+- 测试网 RPC 与浏览器
+* https://rpc-testnet.roothashpay.com
+* https://wss-testnet.roothashpay.com
+* https://explorer-testnet.roothashpay.com
+- 主网 RPC 与浏览器
+* https://rpc.roothashpay.com
+* https://wss.roothashpay.com
+* https://explorer.roothashpay.com
