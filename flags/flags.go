@@ -108,6 +108,19 @@ var (
 		Required: true,
 	}
 
+	GrpcHostFlag = &cli.StringFlag{
+		Name:    "grpc-host",
+		Usage:   "The host of the api",
+		EnvVars: prefixEnvVars("GRPC_HOST"),
+		Value:   "127.0.0.1",
+	}
+	GrpcPortFlag = &cli.IntFlag{
+		Name:    "grpc-port",
+		Usage:   "The port of the api",
+		EnvVars: prefixEnvVars("GRPC_PORT"),
+		Value:   8987,
+	}
+
 	SlaveDbEnableFlag = &cli.BoolFlag{
 		Name:     "slave-db-enable",
 		Usage:    "Whether to use slave db",
@@ -167,6 +180,8 @@ var optionalFlags = []cli.Flag{
 	SlaveDbUserFlag,
 	SlaveDbPasswordFlag,
 	SlaveDbNameFlag,
+	GrpcHostFlag,
+	GrpcPortFlag,
 }
 
 var Flags []cli.Flag

@@ -1,0 +1,52 @@
+syntax="proto3";
+
+option go_package = "./services/grpc/eventpb";
+package theweb3.event;
+
+enum ReturnCode{
+  ERROR =0;
+  SUCCESS=1;
+}
+
+message DepositToken{
+  string guid=1;
+  uint64 block_number =2;
+  string token_address =3;
+  string sender = 4;
+  uint64 amount =5;
+  uint64 timestamp= 6;
+}
+
+message DepositTokensReq{
+  string consumer_token =1 ;
+  uint64 page=2;
+  uint64 page_size=3;
+}
+
+message DepositTokenListRep {
+  ReturnCode code = 1;
+  string message = 2;
+  repeated DepositToken deposit_token = 3;
+}
+
+message DepositTokenDetailReq{
+  string consumer_token = 1; //类似JWT
+  string guid = 2;
+}
+
+message  DepositTokenDetailRep {
+  ReturnCode code = 1;
+  string message = 2;
+  string guid = 3;
+  uint64 block_number = 4;
+  string token_address = 5;
+  string  sender = 6;
+  uint64  amount = 7;
+  uint64 timestamp  = 8;
+}
+
+
+service EventService {
+  rpc getDepositTokenList(DepositTokensReq) returns (DepositTokenListRep) {}
+  rpc getDepositTokenDetail(DepositTokenDetailReq) returns(DepositTokenDetailRep) {}
+}

@@ -17,13 +17,14 @@ const (
 )
 
 type Config struct {
-	Migrations    string
-	Chain         ChainConfig
-	MasterDB      DBConfig
-	SlaveDB       DBConfig
-	SlaveDbEnable bool
-	//ApiCacheEnable bool
-	HTTPServer ServerConfig
+	Migrations     string
+	Chain          ChainConfig
+	MasterDB       DBConfig
+	SlaveDB        DBConfig
+	SlaveDbEnable  bool
+	ApiCacheEnable bool
+	HTTPServer     ServerConfig
+	GrpcServer     ServerConfig
 }
 
 type ChainConfig struct {
@@ -99,6 +100,10 @@ func NewConfig(cliCtx *cli.Context) Config {
 		HTTPServer: ServerConfig{
 			Host: cliCtx.String(flags.HttpHostFlag.Name),
 			Port: cliCtx.Int(flags.HttpPortFlag.Name),
+		},
+		GrpcServer: ServerConfig{
+			Host: cliCtx.String(flags.GrpcHostFlag.Name),
+			Port: cliCtx.Int(flags.GrpcPortFlag.Name),
 		},
 	}
 }
