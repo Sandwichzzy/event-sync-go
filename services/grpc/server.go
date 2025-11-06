@@ -33,15 +33,15 @@ func (rs *RpcService) Stopped() bool {
 	return rs.stopped.Load()
 }
 
-func NewRpcService(conf *config.Config, db *database.DB) (*RpcService, error) {
+func NewRpcService(db *database.DB, conf *config.Config) (*RpcService, error) {
 	rpcService := &RpcService{
-		conf: conf,
 		db:   db,
+		conf: conf,
 	}
 	return rpcService, nil
 }
 
-func (rs *RpcService) start(ctx context.Context) error {
+func (rs *RpcService) Start(ctx context.Context) error {
 	go func(s *RpcService) {
 		addr := fmt.Sprintf("%s:%d", rs.conf.GrpcServer.Host, rs.conf.GrpcServer.Port)
 		listener, err := net.Listen("tcp", addr)
