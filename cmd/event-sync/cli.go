@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 
+	"github.com/Sandwichzzy/event-sync-go/services/api"
 	"github.com/ethereum/go-ethereum/log"
 
 	"github.com/urfave/cli/v2"
@@ -43,7 +44,13 @@ func runGrpc(ctx *cli.Context, _ context.CancelCauseFunc) (cliapp.Lifecycle, err
 }
 
 func runApi(ctx *cli.Context, _ context.CancelCauseFunc) (cliapp.Lifecycle, error) {
-	return nil, nil
+	cfg, err := config.LoadConfig(ctx)
+	if err != nil {
+		log.Error("failed to load config", "err", err)
+		return nil, err
+	}
+	ctx.Context = opio.CancelOnInterrupt(ctx.Context)
+	return api.NewApi(ctx.Context, &cfg)
 }
 
 func runMigrations(ctx *cli.Context) error {
