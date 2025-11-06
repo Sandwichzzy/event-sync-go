@@ -151,7 +151,7 @@ func (x *DepositToken) GetTimestamp() uint64 {
 	return 0
 }
 
-type DepositTokensReq struct {
+type DepositTokenListReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	ConsumerToken string                 `protobuf:"bytes,1,opt,name=consumer_token,json=consumerToken,proto3" json:"consumer_token,omitempty"`
 	Page          uint64                 `protobuf:"varint,2,opt,name=page,proto3" json:"page,omitempty"`
@@ -160,20 +160,20 @@ type DepositTokensReq struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DepositTokensReq) Reset() {
-	*x = DepositTokensReq{}
+func (x *DepositTokenListReq) Reset() {
+	*x = DepositTokenListReq{}
 	mi := &file_services_grpc_protobuf_event_sync_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DepositTokensReq) String() string {
+func (x *DepositTokenListReq) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DepositTokensReq) ProtoMessage() {}
+func (*DepositTokenListReq) ProtoMessage() {}
 
-func (x *DepositTokensReq) ProtoReflect() protoreflect.Message {
+func (x *DepositTokenListReq) ProtoReflect() protoreflect.Message {
 	mi := &file_services_grpc_protobuf_event_sync_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -185,26 +185,26 @@ func (x *DepositTokensReq) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DepositTokensReq.ProtoReflect.Descriptor instead.
-func (*DepositTokensReq) Descriptor() ([]byte, []int) {
+// Deprecated: Use DepositTokenListReq.ProtoReflect.Descriptor instead.
+func (*DepositTokenListReq) Descriptor() ([]byte, []int) {
 	return file_services_grpc_protobuf_event_sync_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *DepositTokensReq) GetConsumerToken() string {
+func (x *DepositTokenListReq) GetConsumerToken() string {
 	if x != nil {
 		return x.ConsumerToken
 	}
 	return ""
 }
 
-func (x *DepositTokensReq) GetPage() uint64 {
+func (x *DepositTokenListReq) GetPage() uint64 {
 	if x != nil {
 		return x.Page
 	}
 	return 0
 }
 
-func (x *DepositTokensReq) GetPageSize() uint64 {
+func (x *DepositTokenListReq) GetPageSize() uint64 {
 	if x != nil {
 		return x.PageSize
 	}
@@ -434,8 +434,8 @@ const file_services_grpc_protobuf_event_sync_proto_rawDesc = "" +
 	"\rtoken_address\x18\x03 \x01(\tR\ftokenAddress\x12\x16\n" +
 	"\x06sender\x18\x04 \x01(\tR\x06sender\x12\x16\n" +
 	"\x06amount\x18\x05 \x01(\x04R\x06amount\x12\x1c\n" +
-	"\ttimestamp\x18\x06 \x01(\x04R\ttimestamp\"j\n" +
-	"\x10DepositTokensReq\x12%\n" +
+	"\ttimestamp\x18\x06 \x01(\x04R\ttimestamp\"m\n" +
+	"\x13DepositTokenListReq\x12%\n" +
 	"\x0econsumer_token\x18\x01 \x01(\tR\rconsumerToken\x12\x12\n" +
 	"\x04page\x18\x02 \x01(\x04R\x04page\x12\x1b\n" +
 	"\tpage_size\x18\x03 \x01(\x04R\bpageSize\"\xa0\x01\n" +
@@ -458,9 +458,9 @@ const file_services_grpc_protobuf_event_sync_proto_rawDesc = "" +
 	"\n" +
 	"ReturnCode\x12\t\n" +
 	"\x05ERROR\x10\x00\x12\v\n" +
-	"\aSUCCESS\x10\x012\xd3\x01\n" +
-	"\fEventService\x12\\\n" +
-	"\x13getDepositTokenList\x12\x1f.theweb3.event.DepositTokensReq\x1a\".theweb3.event.DepositTokenListRep\"\x00\x12e\n" +
+	"\aSUCCESS\x10\x012\xd6\x01\n" +
+	"\fEventService\x12_\n" +
+	"\x13getDepositTokenList\x12\".theweb3.event.DepositTokenListReq\x1a\".theweb3.event.DepositTokenListRep\"\x00\x12e\n" +
 	"\x15getDepositTokenDetail\x12$.theweb3.event.DepositTokenDetailReq\x1a$.theweb3.event.DepositTokenDetailRep\"\x00B\x19Z\x17./services/grpc/eventpbb\x06proto3"
 
 var (
@@ -480,7 +480,7 @@ var file_services_grpc_protobuf_event_sync_proto_msgTypes = make([]protoimpl.Mes
 var file_services_grpc_protobuf_event_sync_proto_goTypes = []any{
 	(ReturnCode)(0),               // 0: theweb3.event.ReturnCode
 	(*DepositToken)(nil),          // 1: theweb3.event.DepositToken
-	(*DepositTokensReq)(nil),      // 2: theweb3.event.DepositTokensReq
+	(*DepositTokenListReq)(nil),   // 2: theweb3.event.DepositTokenListReq
 	(*DepositTokenListRep)(nil),   // 3: theweb3.event.DepositTokenListRep
 	(*DepositTokenDetailReq)(nil), // 4: theweb3.event.DepositTokenDetailReq
 	(*DepositTokenDetailRep)(nil), // 5: theweb3.event.DepositTokenDetailRep
@@ -489,7 +489,7 @@ var file_services_grpc_protobuf_event_sync_proto_depIdxs = []int32{
 	0, // 0: theweb3.event.DepositTokenListRep.code:type_name -> theweb3.event.ReturnCode
 	1, // 1: theweb3.event.DepositTokenListRep.deposit_token:type_name -> theweb3.event.DepositToken
 	0, // 2: theweb3.event.DepositTokenDetailRep.code:type_name -> theweb3.event.ReturnCode
-	2, // 3: theweb3.event.EventService.getDepositTokenList:input_type -> theweb3.event.DepositTokensReq
+	2, // 3: theweb3.event.EventService.getDepositTokenList:input_type -> theweb3.event.DepositTokenListReq
 	4, // 4: theweb3.event.EventService.getDepositTokenDetail:input_type -> theweb3.event.DepositTokenDetailReq
 	3, // 5: theweb3.event.EventService.getDepositTokenList:output_type -> theweb3.event.DepositTokenListRep
 	5, // 6: theweb3.event.EventService.getDepositTokenDetail:output_type -> theweb3.event.DepositTokenDetailRep

@@ -33,7 +33,7 @@ func (rs *RpcService) Stopped() bool {
 	return rs.stopped.Load()
 }
 
-func newRpcService(conf *config.Config, db *database.DB) (*RpcService, error) {
+func NewRpcService(conf *config.Config, db *database.DB) (*RpcService, error) {
 	rpcService := &RpcService{
 		conf: conf,
 		db:   db,

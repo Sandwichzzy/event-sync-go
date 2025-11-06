@@ -27,7 +27,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type EventServiceClient interface {
-	GetDepositTokenList(ctx context.Context, in *DepositTokensReq, opts ...grpc.CallOption) (*DepositTokenListRep, error)
+	GetDepositTokenList(ctx context.Context, in *DepositTokenListReq, opts ...grpc.CallOption) (*DepositTokenListRep, error)
 	GetDepositTokenDetail(ctx context.Context, in *DepositTokenDetailReq, opts ...grpc.CallOption) (*DepositTokenDetailRep, error)
 }
 
@@ -39,7 +39,7 @@ func NewEventServiceClient(cc grpc.ClientConnInterface) EventServiceClient {
 	return &eventServiceClient{cc}
 }
 
-func (c *eventServiceClient) GetDepositTokenList(ctx context.Context, in *DepositTokensReq, opts ...grpc.CallOption) (*DepositTokenListRep, error) {
+func (c *eventServiceClient) GetDepositTokenList(ctx context.Context, in *DepositTokenListReq, opts ...grpc.CallOption) (*DepositTokenListRep, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DepositTokenListRep)
 	err := c.cc.Invoke(ctx, EventService_GetDepositTokenList_FullMethodName, in, out, cOpts...)
@@ -63,7 +63,7 @@ func (c *eventServiceClient) GetDepositTokenDetail(ctx context.Context, in *Depo
 // All implementations should embed UnimplementedEventServiceServer
 // for forward compatibility.
 type EventServiceServer interface {
-	GetDepositTokenList(context.Context, *DepositTokensReq) (*DepositTokenListRep, error)
+	GetDepositTokenList(context.Context, *DepositTokenListReq) (*DepositTokenListRep, error)
 	GetDepositTokenDetail(context.Context, *DepositTokenDetailReq) (*DepositTokenDetailRep, error)
 }
 
@@ -74,7 +74,7 @@ type EventServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedEventServiceServer struct{}
 
-func (UnimplementedEventServiceServer) GetDepositTokenList(context.Context, *DepositTokensReq) (*DepositTokenListRep, error) {
+func (UnimplementedEventServiceServer) GetDepositTokenList(context.Context, *DepositTokenListReq) (*DepositTokenListRep, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetDepositTokenList not implemented")
 }
 func (UnimplementedEventServiceServer) GetDepositTokenDetail(context.Context, *DepositTokenDetailReq) (*DepositTokenDetailRep, error) {
@@ -101,7 +101,7 @@ func RegisterEventServiceServer(s grpc.ServiceRegistrar, srv EventServiceServer)
 }
 
 func _EventService_GetDepositTokenList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DepositTokensReq)
+	in := new(DepositTokenListReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -113,7 +113,7 @@ func _EventService_GetDepositTokenList_Handler(srv interface{}, ctx context.Cont
 		FullMethod: EventService_GetDepositTokenList_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EventServiceServer).GetDepositTokenList(ctx, req.(*DepositTokensReq))
+		return srv.(EventServiceServer).GetDepositTokenList(ctx, req.(*DepositTokenListReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }

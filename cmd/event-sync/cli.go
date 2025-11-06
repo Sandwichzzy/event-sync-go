@@ -3,16 +3,17 @@ package main
 import (
 	"context"
 
-	"github.com/Sandwichzzy/event-sync-go/common/opio"
-	"github.com/Sandwichzzy/event-sync-go/config"
-	"github.com/Sandwichzzy/event-sync-go/database"
 	"github.com/ethereum/go-ethereum/log"
 
 	"github.com/urfave/cli/v2"
 
 	event_sync "github.com/Sandwichzzy/event-sync-go"
 	"github.com/Sandwichzzy/event-sync-go/common/cliapp"
+	"github.com/Sandwichzzy/event-sync-go/common/opio"
+	"github.com/Sandwichzzy/event-sync-go/config"
+	"github.com/Sandwichzzy/event-sync-go/database"
 	flags2 "github.com/Sandwichzzy/event-sync-go/flags"
+	"github.com/Sandwichzzy/event-sync-go/services/grpc"
 )
 
 func runIndexer(ctx *cli.Context, shutdown context.CancelCauseFunc) (cliapp.Lifecycle, error) {
@@ -23,6 +24,22 @@ func runIndexer(ctx *cli.Context, shutdown context.CancelCauseFunc) (cliapp.Life
 		return nil, err
 	}
 	return event_sync.NewEventSync(ctx.Context, &cfg, shutdown)
+}
+
+func runGrpc(ctx *cli.Context, _ context.CancelCauseFunc) (cliapp.Lifecycle, error) {
+	cfg, err := config.LoadConfig(ctx)
+	if err != nil {
+		log.Error("failed to load config", "err", err)
+		return nil, err
+	}
+	ctx.Context = opio.CancelOnInterrupt(ctx.Context)
+	db, err := database.NewDB(ctx.Context, cfg.MasterDB)
+	if err != nil {
+		log.Error("failed to connect to database", "err", err)
+		return nil, err
+	}
+
+	return grpc.NewRpcService(db, &cfg)
 }
 
 func runApi(ctx *cli.Context, _ context.CancelCauseFunc) (cliapp.Lifecycle, error) {
@@ -63,6 +80,12 @@ func NewCli() *cli.App {
 				Flags:       flags,
 				Description: "Runs the api service",
 				Action:      cliapp.LifecycleCmd(runApi),
+			},
+			{
+				Name:        "grpc",
+				Flags:       flags,
+				Description: "Runs the grpc service",
+				Action:      cliapp.LifecycleCmd(runGrpc),
 			},
 			{
 				Name:        "index",

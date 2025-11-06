@@ -17,7 +17,7 @@ message DepositToken{
   uint64 timestamp= 6;
 }
 
-message DepositTokensReq{
+message DepositTokenListReq {
   string consumer_token =1 ;
   uint64 page=2;
   uint64 page_size=3;
@@ -47,6 +47,6 @@ message  DepositTokenDetailRep {
 
 
 service EventService {
-  rpc getDepositTokenList(DepositTokensReq) returns (DepositTokenListRep) {}
+  rpc getDepositTokenList(DepositTokenListReq) returns (DepositTokenListRep) {}
   rpc getDepositTokenDetail(DepositTokenDetailReq) returns(DepositTokenDetailRep) {}
 }
